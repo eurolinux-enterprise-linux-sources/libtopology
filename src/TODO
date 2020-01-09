@@ -1,0 +1,12 @@
+* enhance ability to correlate caches/devices to entities via cpumasks
+* basic hotplug support - inotify on sysfs
+* namespace sanitation - prefix all extern symbols with "topology_"
+* move to buffered I/O, interface is easier to use (e.g. getline)
+* add symbol export list once API firms up
+* lsb checking/compliance:
+   http://www.ibm.com/developerworks/linux/library/l-lsb.html?t=gr,lnxw02=LSBapps
+* use soname etc. in shared library build:
+   http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html
+* "make test; <edit boilerplate>; make test" does not pick up changes
+* stop relying on implicit/default GNU Make rules
+

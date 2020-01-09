@@ -1,0 +1,17 @@
+# 1 package, 2 cores, 2 threads per core, one thread offline
+/devices/system/cpu/cpu0/
+/devices/system/cpu/cpu0/online:1
+/devices/system/cpu/cpu0/topology/thread_siblings:3
+/devices/system/cpu/cpu0/topology/core_siblings:f
+/devices/system/cpu/cpu1/
+/devices/system/cpu/cpu1/online:1
+/devices/system/cpu/cpu1/topology/thread_siblings:3
+/devices/system/cpu/cpu1/topology/core_siblings:f
+/devices/system/cpu/cpu2/
+/devices/system/cpu/cpu2/online:1
+/devices/system/cpu/cpu2/topology/thread_siblings:c
+/devices/system/cpu/cpu2/topology/core_siblings:f
+/devices/system/cpu/cpu3/
+/devices/system/cpu/cpu3/online:0
+/devices/system/cpu/cpu3/topology/thread_siblings:c
+/devices/system/cpu/cpu3/topology/core_siblings:f
