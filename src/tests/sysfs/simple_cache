@@ -1,0 +1,5 @@
+# Hand-written
+/devices/system/cpu/cpu0/cache/index0/size:16K
+/devices/system/cpu/cpu0/cache/index0/shared_cpu_map:1
+/devices/system/cpu/cpu0/cache/index0/type:Instruction
+/devices/system/cpu/cpu0/cache/index0/level:1

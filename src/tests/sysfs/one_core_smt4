@@ -1,0 +1,12 @@
+/devices/system/cpu/cpu0/
+/devices/system/cpu/cpu0/topology/core_id:0
+/devices/system/cpu/cpu0/topology/thread_siblings:f
+/devices/system/cpu/cpu1/
+/devices/system/cpu/cpu1/topology/core_id:0
+/devices/system/cpu/cpu1/topology/thread_siblings:f
+/devices/system/cpu/cpu2/
+/devices/system/cpu/cpu2/topology/core_id:0
+/devices/system/cpu/cpu2/topology/thread_siblings:f
+/devices/system/cpu/cpu3/
+/devices/system/cpu/cpu3/topology/core_id:0
+/devices/system/cpu/cpu3/topology/thread_siblings:f

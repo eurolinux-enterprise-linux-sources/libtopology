@@ -1,0 +1,106 @@
+libtopology: a library for working with Linux system topology
+
+
+Introduction, Motivation
+
+Whereas tools such as taskset, cpusets, and libnuma allow one to
+implement scheduling policies, one must already possess knowledge of a
+particular system's topology to use them effectively.  libtopology and
+the cpumasks program enable one to formulate such policies in terms
+that are abstract and portable rather than literal and
+system-specific.
+
+In HPC environments, for example, users often want to distribute jobs
+within a node on separate processor cores.  On a machine with multiple
+hardware threads per core, however, one must take care to bind the
+tasks to the appropriate logical cpu IDs.  Consider an Intel x86
+system with 4 cores, each with 2 hardware threads -- the logical CPUs
+are numbered 0 through 7.  To distribute the workload equally among
+cores, one would do something like this:
+
+$ for c in 0 1 2 3 ; do taskset -c $c $my_job ; done
+
+To perform the same task on a 4-core POWER5 system (again, two
+hardware threads per core):
+
+$ for c in 0 2 4 6 ; do taskset -c $c $my_job ; done
+
+Why the difference in CPU numbering?  The way that the Linux kernel
+assigns logical CPU numbers to hardware threads differs between
+architectures (x86 and powerpc in this case).  This simple example
+demonstrates that one must know rather intimately the details of a
+given system in order to correctly implement a scheduling policy.  In
+this case, one needs to know not only the total number of processors,
+but also how CPUs are numbered on the system!
+
+libtopology was created to address this kind of issue.  Using the
+cpumasks command included in the libtopology distribution, the same
+command line works on both systems:
+
+$ for mask in $(cpumasks -c) ; do taskset $mask $my_job ; done
+
+Additionally, this works regardless of the total number of cores.
+
+
+Design
+
+libtopology is intended to be immediately useful on modern PC- and
+server-oriented Linux distributions.  Thus, its only library
+dependency is glibc.  It also depends on the topology information
+exposed in sysfs (/sys), which is available only on Linux 2.6 kernels.
+
+libtopology is thread-safe without depending on any particular
+threading library.  libtopology has no global state.  All operations
+are performed on a topology "context," which the library provides to
+users via the topology_init_context() API.  The context object
+returned is the basis for all subsequent operations.
+
+libtopology is intended to be an intuitive and architecture-neutral
+API.  That is, the API shields the user from platform-specific factors
+while providing consistent behavior between different systems.  Users
+of the API should not have to know on which architecture they are
+running.  This is facilitated, and sometimes limited, by the
+information that the kernel provides in sysfs.  If the kernel does not
+provide the right topology information, then neither will the library.
+
+Intelligent handling of CPU and memory hotplug is not implemented yet,
+but should be a (simple?) matter of reinitializing the context object
+or requesting a new one.
+
+
+Usage
+
+The general flow of a C program using libtopology could be something
+like the following.  Assume the program wants to run on each logical
+CPU in the system.  (Error handling is omitted.)
+
+#define _GNU_SOURCE
+#include <sched.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#include <topology.h>
+
+static void do_something(void) { return; }
+
+int main(void) {
+	topo_procent_t system;
+	topo_procent_t thread = (topo_procent_t)0;
+	topo_context_t ctx;
+	size_t cpuset_size;
+	cpu_set_t *mask;
+
+	topology_init_context(&ctx, &system);
+	cpuset_size = topology_sizeof_cpumask(ctx);
+	mask = malloc(cpuset_size);
+
+	while ((thread = topology_traverse(system, thread, TOPOLOGY_THREAD))) {
+		topology_procent_cpumask(thread, mask);
+		sched_setaffinity(getpid(), cpuset_size, mask);
+		do_something();
+	}
+
+	topology_free_context(ctx);
+
+	return 0;
+}

@@ -1,0 +1,5 @@
+# simulate a system that uses 0 as the default core id
+/devices/system/cpu/cpu0/topology/core_id:0
+/devices/system/cpu/cpu1/topology/core_id:0
+/devices/system/node/node0/cpu0/topology/core_id:0
+/devices/system/node/node1/cpu1/topology/core_id:0
